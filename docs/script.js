@@ -30,6 +30,9 @@ const enableWebcamButton = document.getElementById('webcamButton');
 const h1 = document.getElementById('title');
 const des = document.getElementById('description');
 const body = document.getElementById('body');
+
+const header = document.getElementById('header');
+
 // Summarize the id numbers assigned to objects that might be obstacles.
 const obstacles = [1, 2, 3, 4, 6, 7, 8, 11, 18, 33, 37, 41, 44, 64];
 
@@ -102,6 +105,8 @@ function predictWebcam() {
     // Remove any highlighting we did previous frame.
     for (let i = 0; i < children.length; i++) {
       liveView.removeChild(children[i]);
+      header.classList.add('removed');
+
     }
 
     children.splice(0);
@@ -114,6 +119,11 @@ function predictWebcam() {
          // Then, if we are over 66% sure we are sure we classified it right, draw it.
         if ((obstacles.includes(predictions[n].ident) === true) && predictions[n].score > 0.66) {
           const p = document.createElement('p');
+          
+          header.classList.remove('removed');
+          header.innerText = 'There is "' + predictions[n].class + '" in front of you.';
+          header.style = 'position: absolute; z-index: 10;';
+
           p.innerText = predictions[n].class  + ' - with ' 
               + Math.round(parseFloat(predictions[n].score) * 100) 
               + '% confidence.';
@@ -129,8 +139,15 @@ function predictWebcam() {
               + (predictions[n].bbox[2] * (window.innerWidth/640)) + 'px; height: '
               + (predictions[n].bbox[3]  * (window.innerWidth/640)) + 'px;';
           
+
+          //body.appendChild(header);
           liveView.appendChild(highlighter);
           liveView.appendChild(p);
+          //body.push(header);
+
+          liveView.appendChild(highlighter);
+          liveView.appendChild(p);
+
           children.push(highlighter);
           children.push(p);
           
@@ -141,5 +158,5 @@ function predictWebcam() {
     window.requestAnimationFrame(predictWebcam);
 
   });
-
 }
+

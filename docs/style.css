@@ -46,6 +46,19 @@ section {
   transition: opacity 500ms ease-in-out;
 }
 
+header{
+  width: 100%;
+  text-align: center;
+  /*
+  margin-right: auto;
+  margin-left: auto;
+  */
+  background-color: tomato;
+  color: #fffff0;
+  font-size: xx-large;
+  font-weight: bold;
+}
+
 #liveView {
   text-align: center;
 }
@@ -82,3 +95,4 @@ section {
   z-index: 1;
   position: absolute;
 }
+
