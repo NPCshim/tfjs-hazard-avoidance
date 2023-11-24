@@ -121,7 +121,7 @@ function predictWebcam() {
           const p = document.createElement('p');
           
           header.classList.remove('removed');
-          header.innerText = 'There is a' + predictions[n].class + ' in front of you.';
+          header.innerText = 'There is a ' + predictions[n].class + ' in front of you.';
           header.style = 'position: absolute; z-index: 10;';
 
           p.innerText = predictions[n].class  + ' - with ' 
