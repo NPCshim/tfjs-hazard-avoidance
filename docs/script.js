@@ -136,7 +136,7 @@ function predictWebcam() {
 
           const highlighter = document.createElement('div');
           highlighter.setAttribute('class', 'highlighter');
-          highlighter.style = 'left: ' + (predictions[n].bbox[0] * (window.innerWidth/640)) + 'px; top: '
+          highlighter.style = 'left: ' + (predictions[n].bbox[0] * (window.innerWidth/videoWidth)) + 'px; top: '
               + (predictions[n].bbox[1] * (window.innerWidth/videoWidth)) + 'px; width: ' 
               + (predictions[n].bbox[2] * (window.innerWidth/videoWidth)) + 'px; height: '
               + (predictions[n].bbox[3]  * (window.innerWidth/videoWidth)) + 'px;';
