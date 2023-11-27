@@ -30,11 +30,11 @@ const enableWebcamButton = document.getElementById('webcamButton');
 const h1 = document.getElementById('title');
 const des = document.getElementById('description');
 const body = document.getElementById('body');
-
 const header = document.getElementById('header');
-
 // Summarize the id numbers assigned to objects that might be obstacles.
 const obstacles = [1, 2, 3, 4, 6, 7, 8, 11, 18, 33, 37, 41, 44, 64];
+
+let videoWidth = 640;
 
 // Check if webcam access is supported.
 function getUserMediaSupported() {
@@ -69,6 +69,9 @@ function enableCam(event) {
   // If the user is using a smart phone, activate the outside camera.
   if((navigator.userAgent.indexOf('iPhone') > 0) || (navigator.userAgent.indexOf('iPad') > 0) || (navigator.userAgent.indexOf('iPod') > 0) || (navigator.userAgent.indexOf('Android') > 0)){
     constraints = { video: { facingMode: { exact: "environment" } }};
+    if(window.innerWidth < window.innerHeight){
+      videoWidth = 480;
+    }
   }
   
   // Activate the webcam stream.
@@ -106,7 +109,6 @@ function predictWebcam() {
     for (let i = 0; i < children.length; i++) {
       liveView.removeChild(children[i]);
       header.classList.add('removed');
-
     }
 
     children.splice(0);
@@ -121,33 +123,28 @@ function predictWebcam() {
           const p = document.createElement('p');
           
           header.classList.remove('removed');
-          header.innerText = 'There is "' + predictions[n].class + '" in front of you.';
+          header.innerText = 'There is a ' + predictions[n].class + ' in front of you.';
           header.style = 'position: absolute; z-index: 10;';
-
+          
           p.innerText = predictions[n].class  + ' - with ' 
               + Math.round(parseFloat(predictions[n].score) * 100) 
               + '% confidence.';
 
-          p.style = 'margin-left: ' + (predictions[n].bbox[0] * (window.innerWidth/640)) + 'px; margin-top: '
-              + (predictions[n].bbox[1] * (window.innerWidth/640) - 10) + 'px; width: ' 
-              + (predictions[n].bbox[2] * (window.innerWidth/640) - 10) + 'px; top: 0; left: 0;';
+          p.style = 'margin-left: ' + (predictions[n].bbox[0] * (window.innerWidth/videoWidth)) + 'px; margin-top: '
+              + (predictions[n].bbox[1] * (window.innerWidth/videoWidth) - 10) + 'px; width: ' 
+              + (predictions[n].bbox[2] * (window.innerWidth/videoWidth) - 10) + 'px; top: 0; left: 0;';
 
           const highlighter = document.createElement('div');
           highlighter.setAttribute('class', 'highlighter');
           highlighter.style = 'left: ' + (predictions[n].bbox[0] * (window.innerWidth/640)) + 'px; top: '
-              + (predictions[n].bbox[1] * (window.innerWidth/640)) + 'px; width: ' 
-              + (predictions[n].bbox[2] * (window.innerWidth/640)) + 'px; height: '
-              + (predictions[n].bbox[3]  * (window.innerWidth/640)) + 'px;';
+              + (predictions[n].bbox[1] * (window.innerWidth/videoWidth)) + 'px; width: ' 
+              + (predictions[n].bbox[2] * (window.innerWidth/videoWidth)) + 'px; height: '
+              + (predictions[n].bbox[3]  * (window.innerWidth/videoWidth)) + 'px;';
           
-
           //body.appendChild(header);
           liveView.appendChild(highlighter);
           liveView.appendChild(p);
           //body.push(header);
-
-          liveView.appendChild(highlighter);
-          liveView.appendChild(p);
-
           children.push(highlighter);
           children.push(p);
           
@@ -158,5 +155,5 @@ function predictWebcam() {
     window.requestAnimationFrame(predictWebcam);
 
   });
-}
 
+}
