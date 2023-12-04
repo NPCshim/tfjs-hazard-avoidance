@@ -33,8 +33,13 @@ const body = document.getElementById('body');
 const header = document.getElementById('header');
 // Summarize the id numbers assigned to objects that might be obstacles.
 const obstacles = [1, 2, 3, 4, 6, 7, 8, 11, 18, 33, 37, 41, 44, 64];
-
+// Determine the width of the video (changes according to the device)
 let videoWidth = 640;
+// Measure the time elapsed since the object was detected.
+let p_detTime;
+let n_elapTime;
+// Time object detected - elapsed time = dif
+let dif;
 
 // Check if webcam access is supported.
 function getUserMediaSupported() {
@@ -103,19 +108,24 @@ cocoSsd.load().then(function (loadedModel) {
 var children = [];
 
 function predictWebcam() {
+  //var detectTime;
+  //var elapsedTime;
+  
   // Now let's start classifying a frame in the stream.
   model.detect(video).then(function (predictions) {
-    // Remove any highlighting we did previous frame.
+    // Remove any highlighting we did previous frame (except for the header).
+    
+    // Note elapsed time.
+    sessionStorage.setItem('elaptime',Date.now());
+    
     for (let i = 0; i < children.length; i++) {
-      liveView.removeChild(children[i]);
-      header.classList.add('removed');
+      liveView.removeChild(children[i]);  
     }
 
     children.splice(0);
 
     // Now lets loop through predictions and draw them to the live view if
     // they have a high confidence score.
-
     for (let n = 0; n < predictions.length; n++) {
          // To begin with, identify whether the object we are looking for might be an obstacle or not.
          // Then, if we are over 66% sure we are sure we classified it right, draw it.
@@ -136,18 +146,18 @@ function predictWebcam() {
 
           const highlighter = document.createElement('div');
           highlighter.setAttribute('class', 'highlighter');
-          highlighter.style = 'left: ' + (predictions[n].bbox[0] * (window.innerWidth/640)) + 'px; top: '
+          highlighter.style = 'left: ' + (predictions[n].bbox[0] * (window.innerWidth/videoWidth)) + 'px; top: '
               + (predictions[n].bbox[1] * (window.innerWidth/videoWidth)) + 'px; width: ' 
               + (predictions[n].bbox[2] * (window.innerWidth/videoWidth)) + 'px; height: '
               + (predictions[n].bbox[3]  * (window.innerWidth/videoWidth)) + 'px;';
           
-          //body.appendChild(header);
           liveView.appendChild(highlighter);
           liveView.appendChild(p);
-          //body.push(header);
+ 
           children.push(highlighter);
           children.push(p);
           
+          sessionStorage.setItem('detTime', Date.now());
       }
     }   
 
@@ -155,5 +165,14 @@ function predictWebcam() {
     window.requestAnimationFrame(predictWebcam);
 
   });
-
+  
+  // Calculate the time elapsed.
+  p_detTime = sessionStorage.getItem('detTime');
+  n_elapTime = sessionStorage.getItem('elaptime');
+  dif = n_elapTime - p_detTime
+  
+  // If the time exceeds 5 minutes, remove the header.
+  if(dif > 5000){
+    header.classList.add('removed');
+  }
 }
