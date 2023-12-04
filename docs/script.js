@@ -165,6 +165,7 @@ function predictWebcam() {
     window.requestAnimationFrame(predictWebcam);
 
   });
+
   
   // Calculate the time elapsed.
   p_detTime = sessionStorage.getItem('detTime');
