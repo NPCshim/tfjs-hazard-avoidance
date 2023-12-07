@@ -31,6 +31,7 @@ const h1 = document.getElementById('title');
 const des = document.getElementById('description');
 const body = document.getElementById('body');
 const header = document.getElementById('header');
+const beep = document.getElementById("beep");
 // Summarize the id numbers assigned to objects that might be obstacles.
 const obstacles = [1, 2, 3, 4, 6, 7, 8, 11, 18, 33, 37, 41, 44, 64];
 // Determine the width of the video (changes according to the device)
@@ -40,12 +41,15 @@ let p_detTime;
 let n_elapTime;
 // Time object detected - elapsed time = dif
 let dif;
+// Make a sound when it detects an obstacle.
+let PlayOrPause = true;
 
 // Check if webcam access is supported.
 function getUserMediaSupported() {
     return !!(navigator.mediaDevices &&
       navigator.mediaDevices.getUserMedia);
 }
+
 
 // If webcam supported, add event listener to button for when user
 // wants to activate it to call enableCam function which we will 
@@ -108,14 +112,12 @@ cocoSsd.load().then(function (loadedModel) {
 var children = [];
 
 function predictWebcam() {
-  //var detectTime;
-  //var elapsedTime;
-  
   // Now let's start classifying a frame in the stream.
   model.detect(video).then(function (predictions) {
+   
     // Remove any highlighting we did previous frame (except for the header).
     
-    // Note elapsed time.
+    // Record elapsed time.
     sessionStorage.setItem('elaptime',Date.now());
     
     for (let i = 0; i < children.length; i++) {
@@ -157,6 +159,13 @@ function predictWebcam() {
           children.push(highlighter);
           children.push(p);
           
+          // Make a sound once and wait for 5 minutes.
+          if(PlayOrPause === true){
+            beep.play();
+            PlayOrPause = false;
+          }
+          
+          // Record the time of obstacle detection.
           sessionStorage.setItem('detTime', Date.now());
       }
     }   
@@ -165,15 +174,15 @@ function predictWebcam() {
     window.requestAnimationFrame(predictWebcam);
 
   });
-
   
-  // Calculate the time elapsed.
+  // Calculate the difference between the two times.
   p_detTime = sessionStorage.getItem('detTime');
   n_elapTime = sessionStorage.getItem('elaptime');
   dif = n_elapTime - p_detTime
   
-  // If the time exceeds 5 minutes, remove the header.
+  // If the time exceeds 5 minutes, remove the header, and allow it to make a sound when it detects a new obstacle.
   if(dif > 5000){
     header.classList.add('removed');
+    PlayOrPause = true;
   }
 }

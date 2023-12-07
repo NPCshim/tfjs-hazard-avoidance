@@ -1,9 +1,4 @@
 /**
- * cssファイルは元コードから借用いたしました。
- * The css file was borrowed from the original code.
- */
-
-/**
  * @license
  * Copyright 2018 Google LLC. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * =============================================================================
+ */
+
+/**
+ * Google CodeLab "Make a smart webcam in JavaScript with a TensorFlow.js pre-trained Machine Learning model" を基に作成しました。
+ * This code is based on "Make a smart webcam in JavaScript with a TensorFlow.js pre-trained Machine Learning model."
+ * URL: https://codelabs.developers.google.com/codelabs/tensorflowjs-object-detection
+ * 元コードの著作権は Google LLC. と Jason Mayes氏に帰属します。
+ * The original code is copyrighted by Google LLC. and Mr. Jason Mayes.
  */
 
 /* CSS files add styling rules to your content */
@@ -49,10 +52,6 @@ section {
 header{
   width: 100%;
   text-align: center;
-  /*
-  margin-right: auto;
-  margin-left: auto;
-  */
   background-color: tomato;
   color: #fffff0;
   font-size: xx-large;
@@ -91,7 +90,7 @@ header{
 
 .highlighter {
   background: rgba(0, 255, 0, 0.25);
-  border: 1px dashed #fff;
+  border: 1px dashed #FFF;
   z-index: 1;
   position: absolute;
 }
