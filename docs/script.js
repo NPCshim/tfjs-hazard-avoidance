@@ -43,6 +43,8 @@ let n_elapTime;
 let dif;
 // Make a sound when it detects an obstacle.
 let PlayOrPause = true;
+// Determine if the device is mobile or not.
+let phone = false;
 
 // Check if webcam access is supported.
 function getUserMediaSupported() {
@@ -78,6 +80,7 @@ function enableCam(event) {
   // If the user is using a smart phone, activate the outside camera.
   if((navigator.userAgent.indexOf('iPhone') > 0) || (navigator.userAgent.indexOf('iPad') > 0) || (navigator.userAgent.indexOf('iPod') > 0) || (navigator.userAgent.indexOf('Android') > 0)){
     constraints = { video: { facingMode: { exact: "environment" } }};
+    phone = true;
     if(window.innerWidth < window.innerHeight){
       videoWidth = 480;
     }
@@ -137,11 +140,14 @@ function predictWebcam() {
           header.classList.remove('removed');
           header.innerText = 'There is a ' + predictions[n].class + ' in front of you.';
           header.style = 'position: absolute; z-index: 10;';
-          
-          p.innerText = predictions[n].class  + ' - with ' 
-              + Math.round(parseFloat(predictions[n].score) * 100) 
-              + '% confidence.';
 
+          if(phone === true){
+              p.innerText = predictions[n].class;
+          } else {
+              p.innerText = predictions[n].class  + ' - with ' 
+                  + Math.round(parseFloat(predictions[n].score) * 100) 
+                  + '% confidence.';
+          }
           p.style = 'margin-left: ' + (predictions[n].bbox[0] * (window.innerWidth/videoWidth)) + 'px; margin-top: '
               + (predictions[n].bbox[1] * (window.innerWidth/videoWidth) - 10) + 'px; width: ' 
               + (predictions[n].bbox[2] * (window.innerWidth/videoWidth) - 10) + 'px; top: 0; left: 0;';
